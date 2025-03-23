@@ -1,28 +1,35 @@
-// src/VerVehiculos.js
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './VerVehiculos.css';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./VerVehiculos.css";
+import pdfMake from "pdfmake/build/pdfmake";
+
+pdfMake.vfs = window.pdfMake.vfs;
 
 const VerVehiculos = () => {
-  const [vehiculos, setVehiculos] = useState([]); // Lista completa de vehículos
-  const [filteredVehiculos, setFilteredVehiculos] = useState([]); // Lista filtrada
-  const [searchTerm, setSearchTerm] = useState(''); // Término de búsqueda
-  const [tipoFiltro, setTipoFiltro] = useState(''); // Filtro por tipo de vehículo
-  const [mantenimientoFiltro, setMantenimientoFiltro] = useState(''); // Filtro por estado de mantenimiento
+  const [vehiculos, setVehiculos] = useState([]);
+  const [filteredVehiculos, setFilteredVehiculos] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [tipoFiltro, setTipoFiltro] = useState("");
+  const [mantenimientoFiltro, setMantenimientoFiltro] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const [editingId, setEditingId] = useState(null); // ID del vehículo que se está editando
+  const [formData, setFormData] = useState({}); // Datos del formulario de edición
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
   const navigate = useNavigate();
 
   // Obtener los vehículos de la API
   const fetchVehiculos = async () => {
     try {
-      const response = await fetch('https://apimantenimiento.onrender.com/vehiculo/consultar');
+      const response = await fetch(
+        "https://apimantenimiento.onrender.com/vehiculo/consultar"
+      );
       if (!response.ok) {
-        throw new Error('Error al obtener los datos');
+        throw new Error("Error al obtener los datos");
       }
       const data = await response.json();
       setVehiculos(data);
-      setFilteredVehiculos(data); // Inicialmente, la lista filtrada es igual a la lista completa
+      setFilteredVehiculos(data);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -38,25 +45,27 @@ const VerVehiculos = () => {
   // Filtrar vehículos en tiempo real
   useEffect(() => {
     const resultadosFiltrados = vehiculos.filter((vehiculo) => {
-      // Filtro por término de búsqueda
       const coincideBusqueda =
         vehiculo.modelo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         vehiculo.ano.toString().includes(searchTerm) ||
         vehiculo.kilometraje.toString().includes(searchTerm) ||
         vehiculo.estado.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        new Date(vehiculo.ultima_inspeccion).toLocaleDateString().includes(searchTerm) ||
+        new Date(vehiculo.ultima_inspeccion)
+          .toLocaleDateString()
+          .includes(searchTerm) ||
         vehiculo.estado_anomalia_id.toString().includes(searchTerm) ||
-        (vehiculo.requiere_mantenimiento ? 'sí' : 'no').includes(searchTerm.toLowerCase());
+        (vehiculo.requiere_mantenimiento ? "sí" : "no").includes(
+          searchTerm.toLowerCase()
+        );
 
-      // Filtro por tipo de vehículo
       const coincideTipo =
-        tipoFiltro === '' || vehiculo.modelo.toLowerCase().includes(tipoFiltro.toLowerCase());
+        tipoFiltro === "" ||
+        vehiculo.modelo.toLowerCase().includes(tipoFiltro.toLowerCase());
 
-      // Filtro por estado de mantenimiento
       const coincideMantenimiento =
-        mantenimientoFiltro === '' ||
-        (mantenimientoFiltro === 'si' && vehiculo.requiere_mantenimiento) ||
-        (mantenimientoFiltro === 'no' && !vehiculo.requiere_mantenimiento);
+        mantenimientoFiltro === "" ||
+        (mantenimientoFiltro === "si" && vehiculo.requiere_mantenimiento) ||
+        (mantenimientoFiltro === "no" && !vehiculo.requiere_mantenimiento);
 
       return coincideBusqueda && coincideTipo && coincideMantenimiento;
     });
@@ -66,30 +75,195 @@ const VerVehiculos = () => {
   // Función para eliminar un vehículo
   const handleEliminar = async (id) => {
     try {
-      const response = await fetch(`https://apimantenimiento.onrender.com/vehiculo/eliminar/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al eliminar el vehículo');
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No estás autenticado. Inicia sesión para continuar.");
       }
 
-      // Actualizar la lista de vehículos después de eliminar
-      fetchVehiculos();
+      const response = await fetch(
+        `https://apimantenimiento.onrender.com/vehiculo/eliminar/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`, // Incluye el token en el encabezado
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error al eliminar el vehículo");
+      }
+
+      fetchVehiculosConToken(); // Actualiza la lista de vehículos
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
+      alert(`Error: ${error.message}`);
     }
   };
 
-  // Función para editar un vehículo (redirigir a un formulario de edición)
+  // Función para abrir el modal de edición
   const handleEditar = (id) => {
-    // Aquí puedes redirigir a un formulario de edición o abrir un modal
-    console.log('Editar vehículo con ID:', id);
+    const vehiculo = vehiculos.find((v) => v.id === id);
+    setFormData(vehiculo);
+    setEditingId(id);
+    setIsModalOpen(true); // Abrir el modal
+  };
+  const obtenerToken = async () => {
+    try {
+      const response = await fetch(
+        "https://apimantenimiento.onrender.com/login/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nom_usuario: "roberto", // Nombre de usuario
+            con_usuario: "1234", // Contraseña
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Detalles del error:", errorData);
+        throw new Error(
+          `Error al autenticarse: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+      const token = data.token;
+
+      // Guardar el token en localStorage
+      localStorage.setItem("token", token);
+
+      return token;
+    } catch (error) {
+      console.error("Error al obtener el token:", error);
+      return null;
+    }
   };
 
-  // Función para agregar un vehículo (redirigir a la vista /agregar-vehiculo)
+  // Obtener el token al montar el componente
+  useEffect(() => {
+    const fetchToken = async () => {
+      const newToken = await obtenerToken();
+      if (newToken) {
+        console.log("Token obtenido y almacenado:", newToken);
+      } else {
+        console.error("No se pudo obtener el token.");
+      }
+    };
+
+    fetchToken();
+  }, []);
+
+  // Obtener los vehículos de la API
+  const fetchVehiculosConToken = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No estás autenticado. Inicia sesión para continuar.");
+      }
+
+      const response = await fetch(
+        "https://apimantenimiento.onrender.com/vehiculo/consultar",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al obtener los datos");
+      }
+
+      const data = await response.json();
+      setVehiculos(data);
+      setFilteredVehiculos(data);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleGuardar = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No estás autenticado. Inicia sesión para continuar.");
+      }
+
+      // Formatea la fecha correctamente
+      const formattedData = {
+        ...formData,
+        ultima_inspeccion: formData.ultima_inspeccion.split("T")[0], // Convierte "2024-03-15T00:00:00.000Z" a "2024-03-15"
+      };
+
+      const response = await fetch(
+        `https://apimantenimiento.onrender.com/vehiculo/editar/${editingId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(formattedData), // Envía los datos formateados
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error del servidor:", errorData); // Muestra el error del servidor
+        throw new Error(errorData.message || "Error al actualizar el vehículo");
+      }
+
+      fetchVehiculosConToken(); // Actualiza la lista de vehículos
+      setIsModalOpen(false); // Cierra el modal
+    } catch (error) {
+      console.error("Error:", error);
+      alert(`Error: ${error.message}`);
+    }
+  };
+
+  // Cargar los vehículos al montar el componente
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert(
+        "No estás autenticado. Redirigiendo a la página de inicio de sesión..."
+      );
+      navigate("/login");
+    } else {
+      fetchVehiculosConToken();
+    }
+  }, [navigate]);
+
+  // Función para manejar cambios en el formulario de edición
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  // Función para cerrar el modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingId(null);
+  };
+
   const handleAgregar = () => {
-    navigate('/agregar-vehiculo'); // Redirigir a la vista de agregar vehículo
+    navigate("/agregar-vehiculo");
+  };
+
+  // Función para generar el PDF con pdfmake
+  const generarPDF = async () => {
+    // (Código de generación de PDF...)
   };
 
   if (loading) {
@@ -105,9 +279,14 @@ const VerVehiculos = () => {
       {/* Encabezado con título y botón */}
       <div className="header">
         <h1>Vehículos Registrados</h1>
-        <button onClick={handleAgregar} className="agregar-button">
-          Agregar Vehículo
-        </button>
+        <div className="botones">
+          <button onClick={handleAgregar} className="agregar-button">
+            Agregar Vehículo
+          </button>
+          <button onClick={generarPDF} className="pdf-button">
+            Generar PDF
+          </button>
+        </div>
       </div>
 
       {/* Contenedor para los filtros y la tabla */}
@@ -164,15 +343,23 @@ const VerVehiculos = () => {
                   <td>{vehiculo.ano}</td>
                   <td>{vehiculo.kilometraje}</td>
                   <td>{vehiculo.estado}</td>
-                  <td>{new Date(vehiculo.ultima_inspeccion).toLocaleDateString()}</td>
+                  <td>
+                    {new Date(vehiculo.ultima_inspeccion).toLocaleDateString()}
+                  </td>
                   <td>{vehiculo.estado_anomalia_id}</td>
-                  <td>{vehiculo.requiere_mantenimiento ? 'Sí' : 'No'}</td>
+                  <td>{vehiculo.requiere_mantenimiento ? "Sí" : "No"}</td>
                   <td>
                     <div className="acciones">
-                      <button onClick={() => handleEditar(vehiculo.id)} className="editar-button">
+                      <button
+                        onClick={() => handleEditar(vehiculo.id)}
+                        className="editar-button"
+                      >
                         Editar
                       </button>
-                      <button onClick={() => handleEliminar(vehiculo.id)} className="eliminar-button">
+                      <button
+                        onClick={() => handleEliminar(vehiculo.id)}
+                        className="eliminar-button"
+                      >
                         Eliminar
                       </button>
                     </div>
@@ -183,6 +370,76 @@ const VerVehiculos = () => {
           </table>
         </div>
       </div>
+
+      {/* Modal de edición */}
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Editar Vehículo</h2>
+            <form>
+              <label>Modelo:</label>
+              <input
+                type="text"
+                name="modelo"
+                value={formData.modelo}
+                onChange={handleChange}
+              />
+              <label>Año:</label>
+              <input
+                type="number"
+                name="ano"
+                value={formData.ano}
+                onChange={handleChange}
+              />
+              <label>Kilometraje:</label>
+              <input
+                type="number"
+                name="kilometraje"
+                value={formData.kilometraje}
+                onChange={handleChange}
+              />
+              <label>Estado:</label>
+              <input
+                type="text"
+                name="estado"
+                value={formData.estado}
+                onChange={handleChange}
+              />
+              <label>Última Inspección:</label>
+              <input
+                type="date"
+                name="ultima_inspeccion"
+                value={formData.ultima_inspeccion}
+                onChange={handleChange}
+              />
+              <label>Estado Anomalía:</label>
+              <input
+                type="number"
+                name="estado_anomalia_id"
+                value={formData.estado_anomalia_id}
+                onChange={handleChange}
+              />
+              <label>Requiere Mantenimiento:</label>
+              <select
+                name="requiere_mantenimiento"
+                value={formData.requiere_mantenimiento}
+                onChange={handleChange}
+              >
+                <option value={true}>Sí</option>
+                <option value={false}>No</option>
+              </select>
+              <div className="modal-buttons">
+                <button type="button" onClick={handleGuardar}>
+                  Guardar
+                </button>
+                <button type="button" onClick={handleCloseModal}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
