@@ -1,8 +1,8 @@
-// src/AddVehiculo.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AddVehiculo.css';
 
 const AddVehiculo = () => {
+  // Estados para el formulario
   const [formData, setFormData] = useState({
     id: '',
     modelo: '',
@@ -14,8 +14,53 @@ const AddVehiculo = () => {
     requiere_mantenimiento: '',
   });
 
+  // Estados para mensajes, token, carga y errores
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [token, setToken] = useState('');
 
+  // Función para obtener el token de autenticación
+  const obtenerToken = async () => {
+    try {
+      const response = await fetch('https://apimantenimiento.onrender.com/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nom_usuario: 'roberto', // Nombre de usuario
+          con_usuario: '1234', // Contraseña
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json(); // Captura los detalles del error
+        console.error('Detalles del error:', errorData);
+        throw new Error(`Error al autenticarse: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data.token; // Suponiendo que la API devuelve el token en un campo llamado "token"
+    } catch (error) {
+      console.error('Error al obtener el token:', error);
+      return null;
+    }
+  };
+
+  // Obtener el token al montar el componente
+  useEffect(() => {
+    const fetchToken = async () => {
+      const newToken = await obtenerToken();
+      if (newToken) {
+        setToken(newToken);
+      }
+    };
+
+    fetchToken();
+  }, []);
+
+  // Manejar cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -24,49 +69,68 @@ const AddVehiculo = () => {
     });
   };
 
+  // Manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Convertir los campos necesarios
+    setLoading(true);
+    setError(null);
+
+    // Verificar si el token está presente
+    if (!token) {
+      setError('No estás autenticado. Por favor, inicia sesión.');
+      setLoading(false);
+      return;
+    }
+
+    // Preparar los datos para enviar
     const dataToSend = {
       ...formData,
       id: parseInt(formData.id, 10),
       ano: parseInt(formData.ano, 10),
-      kilometraje: formData.kilometraje.toString(), // Convertir a cadena
+      kilometraje: formData.kilometraje.toString(),
       estado_anomalia_id: parseInt(formData.estado_anomalia_id, 10),
       requiere_mantenimiento: formData.requiere_mantenimiento === '1',
-      ultima_inspeccion: formData.ultima_inspeccion.split('T')[0], // Formatear como YYYY-MM-DD
+      ultima_inspeccion: formData.ultima_inspeccion.split('T')[0],
     };
-  
+
     try {
+      // Enviar la solicitud para crear el vehículo
       const response = await fetch('https://apimantenimiento.onrender.com/vehiculo/crear', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsIm5vbV91c3VhcmlvIjoiam9uIiwiaWF0IjoxNzQyNzQ1ODcyLCJleHAiOjE3NDI3NDk0NzJ9.72KE4-WszQJTyAfLc5qot_eTIoBsegCb0sW8DXhLQP8', // Token Bearer
+          Authorization: `Bearer ${token}`, // Usar el token obtenido
         },
         body: JSON.stringify(dataToSend),
       });
-  
+
+      // Manejar errores de la respuesta
       if (!response.ok) {
-        const errorData = await response.json(); // Obtener detalles del error
+        const errorData = await response.json();
         console.error('Detalles del error:', errorData);
         throw new Error('Error al enviar los datos');
       }
-  
+
+      // Procesar la respuesta exitosa
       const result = await response.json();
       setMessage('Vehículo agregado correctamente');
       console.log('Respuesta del servidor:', result);
     } catch (error) {
+      // Manejar errores en la solicitud
       setMessage('Error al agregar el vehículo');
+      setError(error.message);
       console.error('Error:', error);
+    } finally {
+      // Finalizar el estado de carga
+      setLoading(false);
     }
   };
 
   return (
     <div className="add-vehiculo-container">
       <h1>Agregar Vehículo</h1>
-      {message && <p className="message">{message}</p>}
+
+      {/* Formulario para agregar un vehículo */}
       <form className="add-vehiculo-form" onSubmit={handleSubmit}>
         <div className="form-row">
           <div className="form-group">
@@ -184,8 +248,8 @@ const AddVehiculo = () => {
           </div>
         </div>
 
-        <button type="submit" className="submit-button">
-          Agregar Vehículo
+        <button type="submit" className="submit-button" disabled={loading}>
+          {loading ? 'Enviando...' : 'Agregar Vehículo'}
         </button>
       </form>
     </div>
