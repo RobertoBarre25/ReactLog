@@ -1,0 +1,159 @@
+/* src/VerVehiculos.css */
+.ver-vehiculos-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: -300px; /* Reducir el margen superior */
+  }
+  
+  /* Encabezado con título y botón */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .ver-vehiculos-container h1 {
+    font-size: 2em;
+    color: #2c3e50; /* Color oscuro para el título */
+    font-weight: 600; /* Semi-bold */
+    margin: 0; /* Eliminar margen */
+  }
+  
+  /* Estilo del botón "Agregar Vehículo" */
+  .agregar-button {
+    background-color: transparent; /* Fondo transparente */
+    color: #4a5568; /* Color gris oscuro */
+    border: none;
+    padding: 8px 16px; /* Espaciado interno */
+    border-radius: 6px; /* Bordes redondeados */
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500; /* Medium */
+    transition: all 0.3s ease; /* Transición suave */
+  }
+  
+  .agregar-button:hover {
+    color: #1a73e8; /* Azul moderno al pasar el mouse */
+    background-color: rgba(26, 115, 232, 0.1); /* Fondo sutil al pasar el mouse */
+    transform: translateY(-2px); /* Efecto de elevación */
+  }
+  
+  /* Contenedor para los filtros y la tabla */
+  .filtros-y-tabla {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espacio entre los filtros y la tabla */
+  }
+  
+  /* Filtros */
+  .filtros {
+    display: flex;
+    gap: 10px; /* Espacio entre los filtros */
+    justify-content: flex-end; /* Alinear a la derecha */
+  }
+  
+  /* Estilo del buscador y los filtros */
+  .buscador, .filtro {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9em; /* Tamaño de fuente más pequeño */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .buscador:focus, .filtro:focus {
+    border-color: #1a73e8; /* Azul moderno al enfocar */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1); /* Sombra sutil al enfocar */
+  }
+  
+  /* Contenedor para la tabla */
+  .tabla-container {
+    overflow-x: auto; /* Permite el desplazamiento horizontal si la tabla es muy ancha */
+  }
+  
+  .vehiculos-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra más suave */
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .vehiculos-table th,
+  .vehiculos-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0; /* Borde más sutil */
+  }
+  
+  .vehiculos-table th {
+    background-color: #f8f9fa; /* Fondo gris claro para el encabezado */
+    color: #2c3e50; /* Color oscuro para el texto */
+    font-weight: 600; /* Semi-bold */
+    text-transform: uppercase; /* Texto en mayúsculas */
+    font-size: 0.9em;
+  }
+  
+  .vehiculos-table tr:hover {
+    background-color: #f8f9fa; /* Fondo gris claro al pasar el mouse */
+  }
+  
+  .vehiculos-table td {
+    color: #4a5568; /* Color gris oscuro para el texto */
+    font-size: 0.95em;
+  }
+  
+  .acciones {
+    display: flex;
+    gap: 8px; /* Espacio entre botones */
+  }
+  
+  .editar-button,
+  .eliminar-button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .editar-button {
+    background-color: #4caf50; /* Verde */
+    color: white;
+  }
+  
+  .editar-button:hover {
+    background-color: #45a049; /* Verde más oscuro */
+    transform: translateY(-2px); /* Efecto de elevación */
+  }
+  
+  .eliminar-button {
+    background-color: #f44336; /* Rojo */
+    color: white;
+  }
+  
+  .eliminar-button:hover {
+    background-color: #e53935; /* Rojo más oscuro */
+    transform: translateY(-2px); /* Efecto de elevación */
+  }
+  
+  .loading, .error {
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 20px;
+  }
+  
+  .loading {
+    color: #2c3e50; /* Color oscuro */
+  }
+  
+  .error {
+    color: #cc0000; /* Rojo para errores */
+  }
