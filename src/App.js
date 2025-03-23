@@ -5,7 +5,6 @@ import Login from './Components/Login'; // Asegúrate de que la ruta sea correct
 
 function App() {
   return (
-    
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
