@@ -1,0 +1,90 @@
+/* src/AddVehiculo.css */
+.add-vehiculo-container {
+    padding: 90px 20px 20px; /* Espacio para la NavBar */
+    max-width: 800px; /* Aumentamos el ancho máximo */
+    margin: 0 auto;
+  }
+  
+  .add-vehiculo-container h1 {
+    font-size: 2em;
+    color: #1a73e8; /* Azul moderno */
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .add-vehiculo-form {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 20px; /* Espacio entre columnas */
+    margin-bottom: 20px;
+  }
+  
+  .form-row .form-group {
+    flex: 1; /* Cada grupo ocupa el mismo espacio */
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-size: 0.95em;
+    color: #4a5568; /* Gris oscuro */
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1em;
+    color: #2c3e50; /* Color de texto principal */
+    background-color: #f8f9fa; /* Fondo gris claro */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .form-group input:focus,
+  .form-group select:focus {
+    border-color: #1a73e8; /* Azul moderno */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1); /* Sombra sutil */
+  }
+  
+  .submit-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #1a73e8; /* Azul moderno */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .submit-button:hover {
+    background-color: #1557b3; /* Azul más oscuro */
+    transform: translateY(-2px); /* Efecto de elevación */
+  }
+  
+  .message {
+    text-align: center;
+    font-size: 1em;
+    margin-bottom: 20px;
+    color: #1a73e8; /* Azul moderno para mensajes de éxito */
+  }
+  
+  .message.error {
+    color: #cc0000; /* Rojo para mensajes de error */
+  }

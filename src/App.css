@@ -39,18 +39,24 @@
 /* src/App.css */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-}
-
-.home {
-  padding: 100px 20px 20px; /* Añade espacio para la NavBar fija */
-}
-
-.home h1 {
+  font-family: 'Inter', sans-serif;
+  background-color: #f8f9fa;
   color: #2c3e50;
 }
 
+/* Espacio para la NavBar fija */
+.home, .vehiculos-container {
+  padding-top: 90px; /* Ajusta según la altura de la NavBar */
+}
+
+/* Estilos para la página de inicio (opcional) */
+.home h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: #1a73e8;
+}
+
 .home p {
-  color: #555;
+  font-size: 1.1em;
+  color: #4a5568;
 }
