@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AddVehiculo.css';
+import Swal from 'sweetalert2'; // Importar SweetAlert2
 
 const AddVehiculo = () => {
   // Estados para el formulario
@@ -15,7 +16,6 @@ const AddVehiculo = () => {
   });
 
   // Estados para mensajes, token, carga y errores
-  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [token, setToken] = useState('');
@@ -113,13 +113,38 @@ const AddVehiculo = () => {
 
       // Procesar la respuesta exitosa
       const result = await response.json();
-      setMessage('Vehículo agregado correctamente');
       console.log('Respuesta del servidor:', result);
+
+      // Mostrar SweetAlert de éxito
+      Swal.fire({
+        title: "Vehiculo creado correctamente!",
+        icon: "success",
+        draggable: true,      
+        confirmButtonText: 'Aceptar',
+      });
+
+      // Limpiar el formulario después de un envío exitoso
+      setFormData({
+        id: '',
+        modelo: '',
+        ano: '',
+        kilometraje: '',
+        estado: '',
+        ultima_inspeccion: '',
+        estado_anomalia_id: '',
+        requiere_mantenimiento: '',
+      });
     } catch (error) {
       // Manejar errores en la solicitud
-      setMessage('Error al agregar el vehículo');
-      setError(error.message);
       console.error('Error:', error);
+
+      // Mostrar SweetAlert de error
+      Swal.fire({
+        title: 'Error',
+        text: 'Hubo un problema al crear el vehículo. Por favor, inténtalo de nuevo.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+      });
     } finally {
       // Finalizar el estado de carga
       setLoading(false);
@@ -227,9 +252,9 @@ const AddVehiculo = () => {
               required
             >
               <option value="">Selecciona un estado</option>
-              <option value="1">1 - Sin anomalías</option>
-              <option value="2">2 - Anomalías menores</option>
-              <option value="3">3 - Anomalías graves</option>
+              <option value="1">1 - Bien</option>
+              <option value="2">2 - Fallos Imprevistos</option>
+              <option value="3">3 - Desgaste/Anomalias </option>
             </select>
           </div>
 
