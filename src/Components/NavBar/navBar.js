@@ -14,7 +14,7 @@ const NavBar = () => {
       <ul className="navbar-links">
         <li>
           <Link
-            to="/"
+            to="/home"
             className={location.pathname === '/' ? 'active' : ''}
           >
             Inicio
