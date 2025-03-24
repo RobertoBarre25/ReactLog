@@ -1,23 +1,36 @@
 import React, { useState } from 'react';
 import './Login.css'; // Asegúrate de crear este archivo con los estilos
 import { useNavigate } from 'react-router-dom';
+import validator from 'validator'; // Importar validator.js para validar y sanitizar
 
 const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [nomUsuario, setNomUsuario] = useState('');  // Aquí cambiaremos el nombre del estado
-  const [conUsuario, setConUsuario] = useState('');  // Aquí cambiamos también para la contraseña
+  const [nomUsuario, setNomUsuario] = useState('');
+  const [conUsuario, setConUsuario] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const togglePanel = () => {
     setIsSignUp(!isSignUp);
   };
-  
+
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    // Validar y sanitizar las entradas
+    if (!validator.isAlphanumeric(nomUsuario)) {
+      setError('El nombre de usuario solo puede contener caracteres alfanuméricos.');
+      return;
+    }
+
+    if (!validator.isLength(conUsuario, { min: 4 })) {
+      setError('La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
+
     const loginData = {
-      nom_usuario: nomUsuario,  // Aquí usamos "nom_usuario" para el nombre de usuario
-      con_usuario: conUsuario,  // Aquí usamos "con_usuario" para la contraseña
+      nom_usuario: nomUsuario,
+      con_usuario: conUsuario,
     };
 
     try {
@@ -35,11 +48,9 @@ const Login = () => {
       // Si la respuesta es exitosa, guardamos el token
       if (response.ok) {
         localStorage.setItem('authToken', data.token); // Guardamos el token en el localStorage
-        // Redirigir a otra vista o hacer algo más después del login
-        // Por ejemplo, podrías redirigir con React Router:
-        navigate('/home');
+        navigate('/home'); // Redirigir a la página de inicio
       } else {
-        setError(data.message+' Error en los campos, vuelve a intentar ingresando un usuario y contraseña correctos'); // Mostrar un mensaje de error si el login falla
+        setError(data.message + ' Error en los campos, vuelve a intentar ingresando un usuario y contraseña correctos');
       }
     } catch (error) {
       setError('Error connecting to the server');
@@ -65,45 +76,39 @@ const Login = () => {
       </div>
       <div className="form-container sign-in-container">
         <form onSubmit={handleLogin}>
-          <h1>Sign in</h1>
+          <h1>Inicia Sesion</h1>
           <div className="social-container">
-            <a href="#" className="social"><i className="fab fa-facebook-f"></i></a>
-            <a href="#" className="social"><i className="fab fa-google-plus-g"></i></a>
-            <a href="#" className="social"><i className="fab fa-linkedin-in"></i></a>
+            <a className="social">
+              <img src="https://cdn-icons-png.flaticon.com/128/3487/3487044.png" alt="Descripción de la imagen" style={{ width: '30px', height: 'auto' }} />
+            </a>
           </div>
-          <span>or use your account</span>
           <input
-            type="text"  // Cambiamos de "email" a "text" porque ahora el campo es nombre de usuario
+            type="text"
             placeholder="Nombre de Usuario"
             value={nomUsuario}
-            onChange={(e) => setNomUsuario(e.target.value)}  // Aquí actualizamos el estado con el nombre de usuario
+            onChange={(e) => setNomUsuario(e.target.value)}
           />
           <input
             type="password"
             placeholder="Contraseña"
             value={conUsuario}
-            onChange={(e) => setConUsuario(e.target.value)}  // Actualizamos el estado con la contraseña
+            onChange={(e) => setConUsuario(e.target.value)}
           />
-          <a href="#">Forgot your password?</a>
           {error && <p className="error">{error}</p>}
           <button>Sign In</button>
         </form>
       </div>
       <div className="overlay-container">
         <div className="overlay">
-          <div className="overlay-panel overlay-left">
-            <h1>Welcome Back!</h1>
-            <p>To keep connected with us please login with your personal info</p>
-            <button className="ghost" onClick={togglePanel}>Sign In</button>
-          </div>
           <div className="overlay-panel overlay-right">
-            <h1>Hello, Friend!</h1>
-            <p>Enter your personal details and start journey with us</p>
-            <button className="ghost" onClick={togglePanel}>Sign Up</button>
+            <h1>Hola Bienvenido!</h1>
+            <p>Bienvenid@ a Alda's Company una exitosa empresa de Logistica</p>
+            <a className="social">
+              <img src="https://cdn-icons-png.flaticon.com/128/5968/5968374.png" alt="Descripción de la imagen" style={{ width: '60px', height: 'auto' }} />
+            </a>
           </div>
         </div>
       </div>
-      
     </div>
   );
 };
