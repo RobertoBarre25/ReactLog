@@ -1,21 +1,19 @@
-// src/Vehiculos.js
 import React, { useEffect, useState } from 'react';
 import './Principal.css';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
+import { FiArrowRight, FiAlertTriangle, FiCheckCircle } from 'react-icons/fi';
 
 const Vehiculos = () => {
   const [vehiculos, setVehiculos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
-  // Función para obtener los datos de la API
+  // Función para obtener los datos
   const fetchVehiculos = async () => {
     try {
       const response = await fetch('https://apimantenimiento.onrender.com/vehiculo/consultar');
-      if (!response.ok) {
-        throw new Error('Error al obtener los datos');
-      }
+      if (!response.ok) throw new Error('Error al obtener los datos');
       const data = await response.json();
       setVehiculos(data);
     } catch (error) {
@@ -24,44 +22,79 @@ const Vehiculos = () => {
       setLoading(false);
     }
   };
-    // Función que maneja el clic en "Mostrar" y navega a una nueva página
-    const handleShowDetails = (vehiculoId) => {
-      // Aquí se puede redirigir a una vista de detalles con el id del vehículo
-      navigate(`/vehiculo/${vehiculoId}`); // Redirige a la vista de detalles del vehículo
-    };
 
-  // Llamar a la función al cargar el componente
+  const handleShowDetails = (vehiculoId) => {
+    navigate(`/vehiculo/${vehiculoId}`);
+  };
+
   useEffect(() => {
     fetchVehiculos();
   }, []);
 
-  if (loading) {
-    return <div className="loading">Cargando...</div>;
-  }
+  // Función para dividir los vehículos en filas de 5
+  const chunkArray = (array, size) => {
+    const result = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
+  };
 
-  if (error) {
-    return <div className="error">Error: {error}</div>;
-  }
+  const vehiculosPorFilas = chunkArray(vehiculos, 5);
+
+  if (loading) return <div className="loading">Cargando...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
 
   return (
     <div className="vehiculos-container">
-      {vehiculos.map((vehiculo) => (
-        <div key={vehiculo.id} className="vehiculo-card">
-           <span className="requerido" onClick={() => handleShowDetails(vehiculo.id)}>
-            Mostrar
-          </span>
-          <h2>{vehiculo.modelo}</h2>
-          <p><strong>Año:</strong> {vehiculo.ano}</p>
-          <p><strong>Kilometraje:</strong> {vehiculo.kilometraje} km</p>
-          <p><strong>Estado:</strong> {vehiculo.estado}</p>
-          <p><strong>Última inspección:</strong> {new Date(vehiculo.ultima_inspeccion).toLocaleDateString()}</p>
-          {vehiculo.requiere_mantenimiento === 1 ? (
-            <span className="mantenimiento-label requerido">Requiere Mantenimiento</span>
-          ) : (
-            <span className="mantenimiento-label ok">En buen estado</span>
-          )}
-        </div>
-      ))}
+      <div className="vehiculos-rows">
+        {vehiculosPorFilas.map((fila, index) => (
+          <div key={index} className="vehiculos-row">
+            {fila.map((vehiculo) => (
+              <div key={vehiculo.id} className="vehiculo-card">
+                <div className="card-header">
+                  <h2>{vehiculo.modelo}</h2>
+                </div>
+                <div className="card-content">
+                  <p>
+                    <strong>Año</strong>
+                    <span>{vehiculo.ano}</span>
+                  </p>
+                  <p>
+                    <strong>Km</strong>
+                    <span>{vehiculo.kilometraje} km</span>
+                  </p>
+                  <p>
+                    <strong>Estado</strong>
+                    <span>{vehiculo.estado}</span>
+                  </p>
+                  <p>
+                    <strong>Revisión</strong>
+                    <span>{new Date(vehiculo.ultima_inspeccion).toLocaleDateString()}</span>
+                  </p>
+                </div>
+                <div className="card-footer">
+                  <button 
+                    className="mostrar-btn"
+                    onClick={() => handleShowDetails(vehiculo.id)}
+                  >
+                    <FiArrowRight size={12} /> Detalles
+                  </button>
+                  {vehiculo.requiere_mantenimiento === 1 ? (
+                    <span className="mantenimiento-label requerido">
+                      <FiAlertTriangle size={12} /> Revisar
+                    </span>
+                  ) : (
+                    <span className="mantenimiento-label ok">
+                      <FiCheckCircle size={12} /> Óptimo
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
