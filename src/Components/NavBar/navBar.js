@@ -1,15 +1,18 @@
 // src/NavBar.js
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../Context/AuthContext'; // Importa useAuth
 import './navBar.css';
+import { FiLogOut } from 'react-icons/fi';
 
 const NavBar = () => {
   const location = useLocation();
+  const { logout } = useAuth(); // Ahora esto funcionará correctamente
 
   return (
     <nav className="navbar">
       <div className="navbar-logo">
-        <span>Logística App</span>
+        <span>Alda's Logistic</span>
       </div>
       <ul className="navbar-links">
         <li>
@@ -30,11 +33,17 @@ const NavBar = () => {
         </li>
         <li>
           <Link
-            to="/agregar-vehiculo" // Ruta para agregar vehículo
+            to="/agregar-vehiculo"
             className={location.pathname === '/agregar-vehiculo' ? 'active' : ''}
           >
             Agregar Vehículo
           </Link>
+        </li>
+        <li>
+        <button onClick={logout} className="logout-button with-icon">
+          <FiLogOut className="icon" />
+          Cerrar sesión
+        </button>
         </li>
       </ul>
     </nav>

@@ -335,101 +335,105 @@ const VehiculoDetalles = () => {
       
       const dynamicPaddingTop = vehiculo.requiere_mantenimiento === 1 ? '700px' : '100px';
 
-  return (
-     <div className="vehiculo-detalles" style={{ paddingTop: dynamicPaddingTop }}>
-      {/* Información del vehículo */}
-      <div className="vehiculo-info">
-        <h2>{vehiculo.modelo}</h2>
-        <p><strong>Año:</strong> {vehiculo.ano}</p>
-        <p><strong>Kilometraje:</strong> {vehiculo.kilometraje} km</p>
-        <p><strong>Estado:</strong> {vehiculo.estado}</p>
-        <p><strong>Última inspección:</strong> {new Date(vehiculo.ultima_inspeccion).toLocaleDateString()}</p>
-        <p><strong>Requiere Mantenimiento:</strong> {vehiculo.requiere_mantenimiento === 1 ? 'Sí' : 'No'}</p>
-        <div className="reporte">
-            <h2>Reporte de vehiculo</h2>
-            <button onClick={fetchMantenimientos}>generar Reporte</button>
+      return (
+        <div className="vehiculo-detalles">
+          {/* Card izquierdo - Información del vehículo */}
+          <div className="vehiculo-info">
+            <h2>{vehiculo.modelo}</h2>
+            <p><strong>Año:</strong> {vehiculo.ano}</p>
+            <p><strong>Kilometraje:</strong> {vehiculo.kilometraje} km</p>
+            <p><strong>Estado:</strong> {vehiculo.estado}</p>
+            <p><strong>Última inspección:</strong> {new Date(vehiculo.ultima_inspeccion).toLocaleDateString()}</p>
+            <p><strong>Requiere Mantenimiento:</strong> {vehiculo.requiere_mantenimiento === 1 ? 'Sí' : 'No'}</p>
+            <div className="reporte">
+              <h2>Reporte de vehiculo</h2>
+              <button onClick={fetchMantenimientos}>Generar Reporte</button>
+            </div>
           </div>
-      </div>
-
-      {/* Mostrar el formulario de mantenimiento solo si el vehículo requiere mantenimiento */}
-      {vehiculo.requiere_mantenimiento === 1 && (
-        <div className="mantenimiento-form">
-          <h3>Registrar Proceso de Mantenimiento</h3>
-
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Tipo de Mantenimiento</label>
-              <input
-                type="text"
-                name="tipo_mantenimiento"
-                value={tipoMantenimiento}
-                disabled
-                readOnly
-              />
+      
+          {/* Card derecho - Formulario de mantenimiento (solo si es necesario) */}
+          {vehiculo.requiere_mantenimiento === 1 && (
+            <div className="mantenimiento-form">
+              <h3>Registrar Proceso de Mantenimiento</h3>
+              <form onSubmit={handleSubmit}>
+                {/* Primera fila de campos */}
+                <div style={{ display: 'flex', gap: '20px', marginBottom: '18px' }}>
+                  <div style={{ flex: 1 }}>
+                    <label>Tipo de Mantenimiento</label>
+                    <input
+                      type="text"
+                      name="tipo_mantenimiento"
+                      value={tipoMantenimiento}
+                      disabled
+                      readOnly
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label>Fecha</label>
+                    <input
+                      type="date"
+                      name="fecha"
+                      value={formData.fecha}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+      
+                {/* Segunda fila de campos */}
+                <div style={{ display: 'flex', gap: '20px', marginBottom: '18px' }}>
+                  <div style={{ flex: 1 }}>
+                    <label>Estado</label>
+                    <select
+                      name="estado"
+                      value={formData.estado}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="Completado">Completado</option>
+                      <option value="En Proceso">En Proceso</option>
+                      <option value="Pendiente">Pendiente</option>
+                    </select>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label>Costo</label>
+                    <input
+                      type="number"
+                      name="costo"
+                      value={formData.costo}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+      
+                {/* Campos de ancho completo */}
+                <div style={{ marginBottom: '18px' }}>
+                  <label>Descripción</label>
+                  <input
+                    type="text"
+                    name="descripcion"
+                    value={formData.descripcion}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+      
+                <div style={{ marginBottom: '18px' }}>
+                  <label>Observaciones</label>
+                  <textarea
+                    name="observaciones"
+                    value={formData.observaciones}
+                    onChange={handleChange}
+                  />
+                </div>
+      
+                <button type="submit">Registrar Mantenimiento</button>
+              </form>
             </div>
-
-            <div className="form-group">
-              <label>Fecha</label>
-              <input
-                type="date"
-                name="fecha"
-                value={formData.fecha}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Descripción</label>
-              <input
-                type="text"
-                name="descripcion"
-                value={formData.descripcion}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Estado</label>
-              <select
-                name="estado"
-                value={formData.estado}
-                onChange={handleChange}
-                required
-              >
-                <option value="Completado">Completado</option>
-                <option value="En Proceso">En Proceso</option>
-                <option value="Pendiente">Pendiente</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>Costo</label>
-              <input
-                type="number"
-                name="costo"
-                value={formData.costo}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Observaciones</label>
-              <textarea
-                name="observaciones"
-                value={formData.observaciones}
-                onChange={handleChange}
-              />
-            </div>
-
-            <button type="submit">Registrar Mantenimiento</button>
-          </form>
+          )}
         </div>
-      )}
-    </div>
-  );
+      );
 };
 
 export default VehiculoDetalles;

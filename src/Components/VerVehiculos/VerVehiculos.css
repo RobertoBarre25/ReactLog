@@ -3,7 +3,7 @@
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
-    margin-top: -300px; /* Reducir el margen superior */
+    margin-top: 20px; /* Reducir el margen superior */
   }
   
   /* Encabezado con título y botón */

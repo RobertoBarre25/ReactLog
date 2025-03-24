@@ -1,90 +1,209 @@
-/* src/AddVehiculo.css */
+/* Contenedor principal (se mantiene igual) */
 .add-vehiculo-container {
-    padding: 90px 20px 20px; /* Espacio para la NavBar */
-    max-width: 800px; /* Aumentamos el ancho máximo */
-    margin: 0 auto;
+  padding: 70px 20px 10px; /* Reducimos padding superior */
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.nav-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* Modificamos el encabezado para la nueva disposición */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Título centrado */
+.form-header h1 {
+  font-size: 2em;
+  color: #2c3e50;
+  margin: 0 auto; /* Esto centrará el título */
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  text-align: center;
+  order: 2; /* Lo colocamos en medio */
+}
+
+.regresar-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Botón de regresar a la izquierda */
+.regresar-button {
+  order: 1; /* Lo colocamos primero */
+  margin-right: auto; /* Empuja el título al centro */
+}
+
+/* Contenedor de Ver Vehículos a la derecha */
+.form-nav-links {
+  order: 3; /* Lo colocamos al final */
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+/* Botones con estilo original (se mantiene igual) */
+/* Botones - estilo original */
+.nav-link-button {
+  color: #4a5568;
+  background: none;
+  border: none;
+  font-size: 1em;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  font-family: inherit;
+  display: inline-block;
+}
+
+.nav-link-button:hover {
+  color: #1a73e8;
+  background-color: rgba(26, 115, 232, 0.1);
+  transform: translateY(-2px);
+}
+
+/* El resto del CSS se mantiene EXACTAMENTE igual */
+.add-vehiculo-form h1 {
+  font-size: 2em;
+  color: #2c3e50;
+  margin: 0 0 30px 0; /* Solo margen inferior */
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  text-align: center;
+}
+
+/* El resto del formulario se mantiene igual */
+.add-vehiculo-form {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9em;
+  color: #4a5568;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95em;
+  color: #2c3e50;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #1a73e8;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+  background-color: white;
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 14px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.submit-button:hover {
+  background-color: #1557b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(26, 115, 232, 0.2);
+}
+
+.submit-button:disabled {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .add-vehiculo-container {
+    padding: 90px 15px 30px;
   }
   
-  .add-vehiculo-container h1 {
-    font-size: 2em;
-    color: #1a73e8; /* Azul moderno */
-    margin-bottom: 20px;
+  .form-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .form-header h1 {
+    margin: 0;
+    order: 1;
+    width: 100%;
+  }
+  
+  .regresar-button {
+    order: 2;
+    margin-right: 0;
+  }
+  
+  .form-nav-links {
+    order: 3;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .nav-link-button {
+    flex: 1;
     text-align: center;
-  }
-  
-  .add-vehiculo-form {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
   .form-row {
-    display: flex;
-    gap: 20px; /* Espacio entre columnas */
-    margin-bottom: 20px;
+    flex-direction: column;
+    gap: 15px;
   }
-  
-  .form-row .form-group {
-    flex: 1; /* Cada grupo ocupa el mismo espacio */
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  .form-group label {
-    display: block;
-    font-size: 0.95em;
-    color: #4a5568; /* Gris oscuro */
-    margin-bottom: 8px;
-    font-weight: 500;
-  }
-  
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 1em;
-    color: #2c3e50; /* Color de texto principal */
-    background-color: #f8f9fa; /* Fondo gris claro */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .form-group input:focus,
-  .form-group select:focus {
-    border-color: #1a73e8; /* Azul moderno */
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1); /* Sombra sutil */
-  }
-  
-  .submit-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #1a73e8; /* Azul moderno */
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 1em;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-  }
-  
-  .submit-button:hover {
-    background-color: #1557b3; /* Azul más oscuro */
-    transform: translateY(-2px); /* Efecto de elevación */
-  }
-  
-  .message {
-    text-align: center;
-    font-size: 1em;
-    margin-bottom: 20px;
-    color: #1a73e8; /* Azul moderno para mensajes de éxito */
-  }
-  
-  .message.error {
-    color: #cc0000; /* Rojo para mensajes de error */
-  }
+}

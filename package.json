@@ -10,6 +10,7 @@
     "pdfmake": "^0.2.18",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
     "react-router-dom": "^7.4.0",
     "react-scripts": "5.0.1",
     "reactlog": "file:",

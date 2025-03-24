@@ -1,71 +1,159 @@
-/* src/Vehiculos.css */
+/* Contenedor principal */
 .vehiculos-container {
-    display: flex;
-    overflow-x: auto; /* Permite el desplazamiento horizontal */
-    gap: 20px;
+  padding: 30px 180px 30px 90px; /* Más padding a la izquierda */
+  margin-top: 80px;
+  margin-left: 240px;
+  width: calc(100% - 280px);
+  overflow-x: hidden; /* Eliminamos el scroll horizontal */
+}
+
+/* Contenedor de filas */
+.vehiculos-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Fila de cards */
+.vehiculos-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* Siempre 5 columnas */
+  gap: 20px;
+}
+
+/* Card individual */
+.vehiculo-card {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.vehiculo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Encabezado */
+.card-header {
+  padding: 12px 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #2c3e50;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+/* Contenido */
+.card-content {
+  padding: 12px 15px;
+}
+
+.card-content p {
+  margin: 0 0 8px;
+  font-size: 0.85em;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-content strong {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* Pie de card */
+.card-footer {
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* Botón con icono */
+.mostrar-btn {
+  background-color: transparent;
+  color: #1a73e8;
+  border: 1px solid #1a73e8;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mostrar-btn:hover {
+  background-color: rgba(26, 115, 232, 0.1);
+}
+
+/* Etiquetas con iconos */
+.mantenimiento-label {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75em;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mantenimiento-label.requerido {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.mantenimiento-label.ok {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+/* Responsive */
+@media (max-width: 1600px) {
+  .vehiculos-row {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1300px) {
+  .vehiculos-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1024px) {
+  .vehiculos-container {
+    margin-left: 0;
+    width: calc(100% - 40px);
     padding: 20px;
-    margin-top: 80px; /* Espacio para la NavBar fija */
-    margin-left: 240px;
-    scrollbar-width: thin; /* Estilo de la barra de desplazamiento (opcional) */
-    scrollbar-color: #2c3e50 #f4f4f4; /* Color de la barra de desplazamiento (opcional) */
   }
   
-  .vehiculo-card {
-    flex: 0 0 auto; /* Evita que las cards se estiren o encogan */
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 20px;
-    width: 300px; /* Ancho fijo para cada card */
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
+  .vehiculos-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  
-  .vehiculo-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .vehiculos-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  
-  .vehiculo-card h2 {
-    margin: 0 0 15px;
-    font-size: 1.5em;
-    color: #2c3e50;
+}
+
+@media (max-width: 480px) {
+  .vehiculos-row {
+    grid-template-columns: 1fr;
   }
-  
-  .vehiculo-card p {
-    margin: 0 0 10px;
-    color: #555;
-    font-size: 0.95em;
-  }
-  
-  .mantenimiento-label {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 0.9em;
-    margin-top: 15px;
-  }
-  
-  .mantenimiento-label.requerido {
-    background-color: #ffcccc;
-    color: #cc0000;
-  }
-  
-  .mantenimiento-label.ok {
-    background-color: #ccffcc;
-    color: #006600;
-  }
-  
-  /* Estilos para la barra de desplazamiento (opcional) */
-  .vehiculos-container::-webkit-scrollbar {
-    height: 8px;
-  }
-  
-  .vehiculos-container::-webkit-scrollbar-thumb {
-    background-color: #2c3e50;
-    border-radius: 4px;
-  }
-  
-  .vehiculos-container::-webkit-scrollbar-track {
-    background-color: #f4f4f4;
-  }
+}

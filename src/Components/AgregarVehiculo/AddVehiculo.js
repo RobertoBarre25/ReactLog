@@ -1,54 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import './AddVehiculo.css';
-import Swal from 'sweetalert2'; // Importar SweetAlert2
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./AddVehiculo.css";
+import Swal from "sweetalert2";
 
 const AddVehiculo = () => {
-  // Estados para el formulario
   const [formData, setFormData] = useState({
-    id: '',
-    modelo: '',
-    ano: '',
-    kilometraje: '',
-    estado: '',
-    ultima_inspeccion: '',
-    estado_anomalia_id: '',
-    requiere_mantenimiento: '',
+    id: "",
+    modelo: "",
+    ano: "",
+    kilometraje: "",
+    estado: "",
+    ultima_inspeccion: "",
+    estado_anomalia_id: "",
+    requiere_mantenimiento: "",
   });
 
-  // Estados para mensajes, token, carga y errores
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState("");
+  const navigate = useNavigate();
 
-  // Función para obtener el token de autenticación
   const obtenerToken = async () => {
     try {
-      const response = await fetch('https://apimantenimiento.onrender.com/login/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          nom_usuario: 'roberto', // Nombre de usuario
-          con_usuario: '1234', // Contraseña
-        }),
-      });
+      const response = await fetch(
+        "https://apimantenimiento.onrender.com/login/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nom_usuario: "roberto",
+            con_usuario: "1234",
+          }),
+        }
+      );
 
       if (!response.ok) {
-        const errorData = await response.json(); // Captura los detalles del error
-        console.error('Detalles del error:', errorData);
-        throw new Error(`Error al autenticarse: ${response.status} ${response.statusText}`);
+        const errorData = await response.json();
+        console.error("Detalles del error:", errorData);
+        throw new Error(
+          `Error al autenticarse: ${response.status} ${response.statusText}`
+        );
       }
 
       const data = await response.json();
-      return data.token; // Suponiendo que la API devuelve el token en un campo llamado "token"
+      return data.token;
     } catch (error) {
-      console.error('Error al obtener el token:', error);
+      console.error("Error al obtener el token:", error);
       return null;
     }
   };
 
-  // Obtener el token al montar el componente
   useEffect(() => {
     const fetchToken = async () => {
       const newToken = await obtenerToken();
@@ -60,7 +63,6 @@ const AddVehiculo = () => {
     fetchToken();
   }, []);
 
-  // Manejar cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -69,94 +71,100 @@ const AddVehiculo = () => {
     });
   };
 
-  // Manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    // Verificar si el token está presente
     if (!token) {
-      setError('No estás autenticado. Por favor, inicia sesión.');
+      setError("No estás autenticado. Por favor, inicia sesión.");
       setLoading(false);
       return;
     }
 
-    // Preparar los datos para enviar
     const dataToSend = {
       ...formData,
       id: parseInt(formData.id, 10),
       ano: parseInt(formData.ano, 10),
       kilometraje: formData.kilometraje.toString(),
       estado_anomalia_id: parseInt(formData.estado_anomalia_id, 10),
-      requiere_mantenimiento: formData.requiere_mantenimiento === '1',
-      ultima_inspeccion: formData.ultima_inspeccion.split('T')[0],
+      requiere_mantenimiento: formData.requiere_mantenimiento === "1",
+      ultima_inspeccion: formData.ultima_inspeccion.split("T")[0],
     };
 
     try {
-      // Enviar la solicitud para crear el vehículo
-      const response = await fetch('https://apimantenimiento.onrender.com/vehiculo/crear', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`, // Usar el token obtenido
-        },
-        body: JSON.stringify(dataToSend),
-      });
+      const response = await fetch(
+        "https://apimantenimiento.onrender.com/vehiculo/crear",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(dataToSend),
+        }
+      );
 
-      // Manejar errores de la respuesta
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Detalles del error:', errorData);
-        throw new Error('Error al enviar los datos');
+        console.error("Detalles del error:", errorData);
+        throw new Error("Error al enviar los datos");
       }
 
-      // Procesar la respuesta exitosa
       const result = await response.json();
-      console.log('Respuesta del servidor:', result);
+      console.log("Respuesta del servidor:", result);
 
-      // Mostrar SweetAlert de éxito
       Swal.fire({
-        title: "Vehiculo creado correctamente!",
+        title: "Vehículo creado correctamente!",
         icon: "success",
-        draggable: true,      
-        confirmButtonText: 'Aceptar',
+        draggable: true,
+        confirmButtonText: "Aceptar",
       });
 
-      // Limpiar el formulario después de un envío exitoso
       setFormData({
-        id: '',
-        modelo: '',
-        ano: '',
-        kilometraje: '',
-        estado: '',
-        ultima_inspeccion: '',
-        estado_anomalia_id: '',
-        requiere_mantenimiento: '',
+        id: "",
+        modelo: "",
+        ano: "",
+        kilometraje: "",
+        estado: "",
+        ultima_inspeccion: "",
+        estado_anomalia_id: "",
+        requiere_mantenimiento: "",
       });
     } catch (error) {
-      // Manejar errores en la solicitud
-      console.error('Error:', error);
-
-      // Mostrar SweetAlert de error
+      console.error("Error:", error);
       Swal.fire({
-        title: 'Error',
-        text: 'Hubo un problema al crear el vehículo. Por favor, inténtalo de nuevo.',
-        icon: 'error',
-        confirmButtonText: 'Aceptar',
+        title: "Error",
+        text: "Hubo un problema al crear el vehículo. Por favor, inténtalo de nuevo.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
       });
     } finally {
-      // Finalizar el estado de carga
       setLoading(false);
     }
   };
 
   return (
     <div className="add-vehiculo-container">
-      <h1>Agregar Vehículo</h1>
+     <div className="nav-buttons-container">
+    <button 
+      className="nav-link-button"
+      onClick={() => navigate('/home')}
+    >
+      Regresar
+    </button>
+    
+    <button 
+      className="nav-link-button"
+      onClick={() => navigate('/vehiculos')}
+    >
+      Ver Vehículos
+    </button>
+  </div>
 
-      {/* Formulario para agregar un vehículo */}
+
       <form className="add-vehiculo-form" onSubmit={handleSubmit}>
+      <h1>Agregar Vehículo</h1>
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="id">ID</label>
@@ -254,12 +262,14 @@ const AddVehiculo = () => {
               <option value="">Selecciona un estado</option>
               <option value="1">1 - Bien</option>
               <option value="2">2 - Fallos Imprevistos</option>
-              <option value="3">3 - Desgaste/Anomalias </option>
+              <option value="3">3 - Desgaste/Anomalias</option>
             </select>
           </div>
 
           <div className="form-group">
-            <label htmlFor="requiere_mantenimiento">¿Requiere Mantenimiento?</label>
+            <label htmlFor="requiere_mantenimiento">
+              ¿Requiere Mantenimiento?
+            </label>
             <select
               id="requiere_mantenimiento"
               name="requiere_mantenimiento"
@@ -274,8 +284,8 @@ const AddVehiculo = () => {
         </div>
 
         <button type="submit" className="submit-button" disabled={loading}>
-          {loading ? 'Enviando...' : 'Agregar Vehículo'}
-        </button>
+      {loading ? 'Enviando...' : 'Agregar Vehículo'}
+    </button>
       </form>
     </div>
   );

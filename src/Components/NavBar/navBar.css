@@ -1,61 +1,121 @@
 /* src/NavBar.css */
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #ffffff; /* Fondo blanco */
-    padding: 15px 40px; /* Más espacio interno */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra más suave */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-  }
-  
-  .navbar-logo span {
-    font-size: 1.6em;
-    font-weight: 700; /* Bold */
-    color: #1a73e8; /* Azul moderno */
-    letter-spacing: -0.5px;
-    transition: color 0.3s ease;
-  }
-  
-  .navbar-logo span:hover {
-    color: #1557b3; /* Azul más oscuro al pasar el mouse */
-  }
-  
-  .navbar-links {
-    list-style: none;
-    display: flex;
-    gap: 30px; /* Más espacio entre enlaces */
-    margin: 0;
-    padding: 0;
-  }
-  
-  .navbar-links li {
-    display: inline;
-  }
-  
-  .navbar-links a {
-    color: #4a5568; /* Color gris oscuro */
-    text-decoration: none;
-    font-size: 1em;
-    font-weight: 500; /* Medium */
-    padding: 8px 12px; /* Espacio interno para los enlaces */
-    border-radius: 6px; /* Bordes redondeados */
-    transition: all 0.3s ease;
-  }
-  
-  .navbar-links a:hover {
-    color: #1a73e8; /* Azul moderno al pasar el mouse */
-    background-color: rgba(26, 115, 232, 0.1); /* Fondo sutil al pasar el mouse */
-    transform: translateY(-2px); /* Efecto de elevación */
-  }
-  
-  /* Estilo activo para el enlace seleccionado */
-  .navbar-links a.active {
-    color: #1a73e8; /* Azul moderno */
-    background-color: rgba(26, 115, 232, 0.1); /* Fondo sutil */
-    font-weight: 600; /* Semi-bold */
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff; /* Fondo blanco */
+  padding: 15px 40px; /* Más espacio interno */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra más suave */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar-logo span {
+  font-size: 1.6em;
+  font-weight: 700; /* Bold */
+  color: #1a73e8; /* Azul moderno */
+  letter-spacing: -0.5px;
+  transition: color 0.3s ease;
+}
+
+.navbar-logo span:hover {
+  color: #1557b3; /* Azul más oscuro al pasar el mouse */
+}
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  align-items: center; /* Asegura que todos los hijos se alineen verticalmente */
+  height: 100%; /* Toma toda la altura disponible */
+}
+
+.navbar-links li {
+  align-items: center; /* Centra verticalmente el contenido */
+  height: 100%; /* Toma toda la altura del contenedor padre */
+}
+.navbar-links a {
+  color: #4a5568; /* Color gris oscuro */
+  text-decoration: none;
+  font-size: 1em;
+  font-weight: 500; /* Medium */
+  padding: 8px 12px; /* Espacio interno para los enlaces */
+  border-radius: 6px; /* Bordes redondeados */
+  transition: all 0.3s ease;
+}
+
+.navbar-links a:hover {
+  color: #1a73e8; /* Azul moderno al pasar el mouse */
+  background-color: rgba(26, 115, 232, 0.1); /* Fondo sutil al pasar el mouse */
+  transform: translateY(-2px); /* Efecto de elevación */
+}
+
+/* Estilo activo para el enlace seleccionado */
+.navbar-links a.active {
+  color: #1a73e8; /* Azul moderno */
+  background-color: rgba(26, 115, 232, 0.1); /* Fondo sutil */
+  font-weight: 600; /* Semi-bold */
+}
+
+/* Añade esto a tu NavBar.css */
+
+/* Estilo base del botón de logout - similar a los enlaces */
+.logout-button {
+  color: #4a5568;
+  background: none;
+  border: none;
+  font-size: 1em;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  text-decoration: none;
+  display: inline-flex; /* Mejor que inline-block para alinear íconos */
+  align-items: center; /* Centra el contenido verticalmente */
+  justify-content: center; /* Centra el contenido horizontalmente */
+  height: 100%; /* Misma altura que los enlaces */
+  line-height: normal; /* Evita desplazamientos verticales */
+  margin: 0; /* Elimina márgenes por defecto */
+}
+
+/* Efecto hover - similar pero con rojo */
+.logout-button:hover {
+  color: #e53e3e; /* Rojo moderno al pasar el mouse */
+  background-color: rgba(229, 62, 62, 0.1); /* Fondo sutil rojo */
+  transform: translateY(-2px); /* Mismo efecto de elevación */
+}
+
+/* Estilo cuando está activo (opcional) */
+.logout-button:active {
+  transform: translateY(0); /* Elimina el efecto de elevación al hacer click */
+}
+
+/* Si quieres mantener el estilo "active" cuando está en la página de login */
+.logout-button.active {
+  color: #e53e3e; /* Rojo moderno */
+  background-color: rgba(229, 62, 62, 0.1); /* Fondo sutil rojo */
+  font-weight: 600; /* Semi-bold - igual que los enlaces activos */
+}
+/* Estilo con ícono */
+.logout-button.with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.logout-button .icon {
+  font-size: 1.1em;
+  margin-right: 6px;
+  vertical-align: middle; /* Alineación vertical perfecta */
+}
+.navbar-links li:last-child {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
