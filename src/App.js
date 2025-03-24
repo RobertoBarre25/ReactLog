@@ -5,6 +5,7 @@ import Home from "./Components/Principal/principal";
 import NavBar from "./Components/NavBar/navBar"; // 
 import AddVehiculo from "./Components/AgregarVehiculo/AddVehiculo";
 import Vehiculos from "./Components/VerVehiculos/VerVehiculos";
+import VehiculoDetalles from './Components/VehiculoDetalles/vehiculoDetalles';
 import React from "react";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/agregar-vehiculo" element={<AddVehiculo />} />
         <Route path="/vehiculos" element={<Vehiculos />} />
+        <Route path="/vehiculo/:id" element={<VehiculoDetalles />} />
       </Routes>
     </>
   );

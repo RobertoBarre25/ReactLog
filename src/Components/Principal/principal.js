@@ -1,11 +1,13 @@
 // src/Vehiculos.js
 import React, { useEffect, useState } from 'react';
 import './Principal.css';
+import { useNavigate } from 'react-router-dom'; 
 
 const Vehiculos = () => {
   const [vehiculos, setVehiculos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); 
 
   // Función para obtener los datos de la API
   const fetchVehiculos = async () => {
@@ -22,6 +24,11 @@ const Vehiculos = () => {
       setLoading(false);
     }
   };
+    // Función que maneja el clic en "Mostrar" y navega a una nueva página
+    const handleShowDetails = (vehiculoId) => {
+      // Aquí se puede redirigir a una vista de detalles con el id del vehículo
+      navigate(`/vehiculo/${vehiculoId}`); // Redirige a la vista de detalles del vehículo
+    };
 
   // Llamar a la función al cargar el componente
   useEffect(() => {
@@ -40,6 +47,9 @@ const Vehiculos = () => {
     <div className="vehiculos-container">
       {vehiculos.map((vehiculo) => (
         <div key={vehiculo.id} className="vehiculo-card">
+           <span className="requerido" onClick={() => handleShowDetails(vehiculo.id)}>
+            Mostrar
+          </span>
           <h2>{vehiculo.modelo}</h2>
           <p><strong>Año:</strong> {vehiculo.ano}</p>
           <p><strong>Kilometraje:</strong> {vehiculo.kilometraje} km</p>
